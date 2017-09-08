@@ -4,13 +4,19 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 )
 
 func main() {
-	log.Println("Starting server at http://localhost:8080")
+	port := os.Getenv("PORT")
+	if len(port) == 0 {
+		port = "8080"
+	}
+
+	log.Println("Starting server at http://localhost:" + port)
 
 	http.HandleFunc("/verify", handleRequest)
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":"+port, nil)
 }
 
 func handleRequest(w http.ResponseWriter, r *http.Request) {
@@ -23,7 +29,7 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	verify_result := VerifyResult{ Email: email }
+	verify_result := VerifyResult{Email: email}
 
 	verify_result.Verify()
 
